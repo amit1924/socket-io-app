@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            height: 300px;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ccc;
+        }
+
+        #messages li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        #messages li:nth-child(even) {
+            background-color: #e0f7fa;
+        }
+
+        #form {
+            margin-top: 20px;
+            display: flex;
+        }
+
+        #input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #input::placeholder {
+            color: #999;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <ul id="messages"></ul>
+
+        <form id="form">
+            <input id="input" autocomplete="off" placeholder="Type your message...">
+            <button>Send</button>
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Select DOM elements
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+
+        // Create Instances of Socket
+        const socket = io();
+
+        // Attach event listeners to Socket
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (input.value) {
+
+                // Provide the data or message to the server
+                socket.emit("chat message", input.value);
+                input.value = "";
+            }
+        });
+
+        // Receive data from the server
+        socket.on("chat message", (msg) => {
+            const item = document.createElement("li");
+            item.textContent = msg;
+            document.getElementById("messages").appendChild(item);
+        });
+    </script>
+</body>
+</html>
